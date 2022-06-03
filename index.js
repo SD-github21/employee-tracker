@@ -56,7 +56,7 @@ const profileMenuOptions = () => {
                     message: "Which department does the role belong to?",
                  },
                 ])
-            .then (roleData => {addRole(roleData)});
+            .then (roleData => {addData(roleData)});
         } else if (menu === "Add an employee") {
             addEmp();
         } else if (menu === "Update an employee role") {
@@ -138,39 +138,45 @@ const addDepts = (deptData) => {
     
  };
     
- const addRole = (roleData) => {
+ const addData = (roleData) => {
+     console.log(roleData);
     let role = roleData.role;
+    console.log(role);
     let salary = roleData.salary;
+    console.log(salary);
     let department = roleData.department;
+    console.log(department);
 
 
-        let role_id = `SELECT roles.department_id FROM roles 
-        INNER JOIN department ON department_id = department.id
-        WHERE department.name = '${department}'`;
+        let role_id = `SELECT department.id FROM department 
+        INNER JOIN roles ON department_id = department.id
+        WHERE department.name = '${department}' 
+        LIMIT 1`;
 
             db.connect(function(err) {
 
                 db.query(role_id, (err, result) => {
                     if (err) throw err;
-                    console.log(result);
+                    let dept_id = result[0].id;
+                    addRole(role, salary, dept_id);
+
                 });
-            });
-};   
-
-
-//     const add_role = `INSERT INTO roles (title, salary, department_id)
-//     VALUES
-//     ('${role}', '${salary}', '${department})`;
-       
-//     db.connect(function(err) {
         
-//         db.query(add_role, (err, result) => {
-//             if (err) throw err;
-//             console.log(`Added ${role} to the database`);
-//         });
-//     });
+        const addRole = (role, salary, dept_id) => {
+
+
+            const add_role = `INSERT INTO roles (title, salary, department_id)
+            VALUES
+            ('${role}', '${salary}', '${dept_id}')`;
+
+            db.query(add_role, (err, result) => {
+                if (err) throw err;
+                console.log(`Added ${role} to the database`);
+            });
+        }       
+   });
+};   
     
-//  };
     
     
 
