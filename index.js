@@ -3,9 +3,6 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const db = require("./db/connection");
 
-let add_role = `INSERT INTO roles (title, salary, department_id)
-                VALUES
-                (?, ?, ?)`;
 
 let add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                VALUES
@@ -42,7 +39,24 @@ const profileMenuOptions = () => {
             })
             .then (deptData => {addDepts(deptData)});
         } else if (menu === "Add a role") {
-            addRole();
+            inquirer.prompt(
+                {
+                    type: "input",
+                    name: "role",
+                    message: "What is the name of the role?",
+                },
+                {
+                    type: "input",
+                    name: "salary",
+                    message: "What is the salary of the role?",
+                },
+                {
+                    type: "input",
+                    name: "department",
+                    message: "Which department does the role belong to?",
+                 },
+            )
+            .then (roleData => {addRole(roleData)});
         } else if (menu === "Add an employee") {
             addEmp();
         } else if (menu === "Update an employee role") {
@@ -124,6 +138,24 @@ const addDepts = (deptData) => {
     
  };
     
+ const addRole = (roleData) => {
+    let role = roleData.role;
+    let salary = roleData.salary;
+    let department = roleData.department;
+
+    const add_role = `INSERT INTO roles (title, salary, department_id)
+    VALUES
+    ('${role}', '${salary}', '${department})`;
+       
+    db.connect(function(err) {
+        
+        db.query(add_role, (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${role} to the database`);
+        });
+    });
+    
+ };
     
     
 
