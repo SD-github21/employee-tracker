@@ -23,7 +23,7 @@ const profileMenuOptions = () => {
             message: "What would you like to do?",
             choices: ['View all departments', 'View all roles', 'View all employees', 
                       'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 
-                      'Exit'],
+                      'Exit']
         })
     .then (({ menu }) => {
         // Create if statement to direct user to the SQL queries associated with the menu options
@@ -34,7 +34,13 @@ const profileMenuOptions = () => {
         } else if (menu === "View all employees") {
             viewEmps();
         } else if (menu === "Add a department") {
-            addDepts();
+            inquirer.prompt(
+                {
+                    type: "input",
+                    name: "department",
+                    message: "What is the name of the department?",
+            })
+            .then (deptData => {addDepts(deptData)});
         } else if (menu === "Add a role") {
             addRole();
         } else if (menu === "Add an employee") {
@@ -102,6 +108,22 @@ const viewEmps = () => {
     };
 
 
+const addDepts = (deptData) => {
+    let dept_name = (deptData.department);
+
+    const add_dept = `INSERT INTO department (name) VALUES
+    ('${dept_name}')`;
+       
+    db.connect(function(err) {
+        
+        db.query(add_dept, (err, result) => {
+            if (err) throw err;
+            console.log(`Added ${dept_name} to the database`);
+        });
+          });
+    
+ };
+    
     
     
 
