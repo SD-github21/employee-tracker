@@ -39,7 +39,7 @@ const profileMenuOptions = () => {
             })
             .then (deptData => {addDepts(deptData)});
         } else if (menu === "Add a role") {
-            inquirer.prompt(
+           return inquirer.prompt([
                 {
                     type: "input",
                     name: "role",
@@ -55,7 +55,7 @@ const profileMenuOptions = () => {
                     name: "department",
                     message: "Which department does the role belong to?",
                  },
-            )
+                ])
             .then (roleData => {addRole(roleData)});
         } else if (menu === "Add an employee") {
             addEmp();
@@ -143,19 +143,34 @@ const addDepts = (deptData) => {
     let salary = roleData.salary;
     let department = roleData.department;
 
-    const add_role = `INSERT INTO roles (title, salary, department_id)
-    VALUES
-    ('${role}', '${salary}', '${department})`;
+
+        let role_id = `SELECT roles.department_id FROM roles 
+        INNER JOIN department ON department_id = department.id
+        WHERE department.name = '${department}'`;
+
+            db.connect(function(err) {
+
+                db.query(role_id, (err, result) => {
+                    if (err) throw err;
+                    console.log(result);
+                });
+            });
+};   
+
+
+//     const add_role = `INSERT INTO roles (title, salary, department_id)
+//     VALUES
+//     ('${role}', '${salary}', '${department})`;
        
-    db.connect(function(err) {
+//     db.connect(function(err) {
         
-        db.query(add_role, (err, result) => {
-            if (err) throw err;
-            console.log(`Added ${role} to the database`);
-        });
-    });
+//         db.query(add_role, (err, result) => {
+//             if (err) throw err;
+//             console.log(`Added ${role} to the database`);
+//         });
+//     });
     
- };
+//  };
     
     
 
