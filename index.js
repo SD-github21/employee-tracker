@@ -3,9 +3,20 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const db = require("./db/connection");
 
-let view_depts = `SELECT * FROM department`;
-let view_roles = `SELECT * FROM roles`;
-let view_emps = `SELECT * FROM employee`
+let view_depts = `SELECT department.id AS dept_id, department.name AS dept_name FROM department`;
+
+let view_roles = `SELECT roles.id AS role_id, roles.title AS job_title, department.name AS dept_name,
+                 roles.salary AS salary
+                 FROM roles
+                 INNER JOIN department ON roles.department_id = department.id`;
+
+let view_emps = `SELECT employee.id AS emp_id, employee.first_name AS first_name, employee.last_name AS last_name,  
+                roles.title AS job_title, department.name AS department, roles.salary,
+                CONCAT(employee.first_name,' ', employee.last_name) as manager
+                FROM employee
+                INNER JOIN roles ON employee.role_id = roles.id
+                LEFT JOIN department ON department.id = roles.department_id`; 
+
 let add_dept = `INSERT INTO department (name)
                 VALUES
                 (?)`;
