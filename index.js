@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 require("console.table");
 const db = require("./db/connection");
 
+// Create function 
 const profileMenuOptions = () => {
     inquirer.prompt(
         {
@@ -74,32 +75,32 @@ const profileMenuOptions = () => {
             .then (empData => {addEmpData(empData)});
         } else if (menu === "Update an employee role") {
 
-            let employee_table = `SELECT CONCAT(employee.first_name,' ', employee.last_name) AS employee
+            let employee_name = `SELECT CONCAT(employee.first_name,' ', employee.last_name) AS employee
             FROM employee`;
         db.connect(function(err) {
             if (err) throw err;
-            db.query(employee_table, function (err, result) {
+            db.query(employee_name, function (err, result) {
                 if (err) throw err;
-                console.log(result);
                 let getEmpChoices = result.map(({ employee }) => employee) 
                 return inquirer.prompt([
                     {
                         type: "list",
-                        name: "empNewRole",
+                        name: "empFullName",
                         message: "Which employee's role would you like to update?",
                         choices:  getEmpChoices,
                     },
+
                     {
                         type: "input",
                         name: "newRole",
                         message: "What is the new role of this employee?"
                     }
                 ])
-                .then (empRole => {updateRole(empRole)});
+                .then (empRole => {updateRoleData(empRole)});
             })});
         } else {
             // Create a statement to notify user that application has finished
-            console.log("You have finished viewing and managing your organization's data. Goodbye!");
+            console.log("You have finished viewing and managing your organization's data. Goodbye!")
             return;
         }
 
@@ -266,36 +267,65 @@ const addEmpData = (empData) => {
         }
             
 
-        const addEmp = (first_name, last_name, role_id, manager_id) => {
-           
-                    const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-                    VALUES
-                    ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
+ const addEmp = (first_name, last_name, role_id, manager_id) => {
+    
+            const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            VALUES
+            ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
      
-                       db.query(add_emp, (err, result) => {
-                           if (err) throw err;
-                           console.log(`Added ${first_name} ${last_name} to the database`);
-                           profileMenuOptions();
-                       });
-                   } ;      
+            db.query(add_emp, (err, result) => {
+                if (err) throw err;
+                console.log(`Added ${first_name} ${last_name} to the database`);
+                profileMenuOptions();
+            });
+};      
               
                       
               
                
     
-const updateRole = function (updateData) {
-console.log(updateData);
-let employee_name = updateData.empNewRole
-let newRole = updateData.newRole
+const updateRoleData = function (updateData) {
 
-let employee_id = `SELECT employee.id FROM employee 
-                WHERE CONCAT(employee.first_name,' ', employee.last_name) = ${employee_name}`;
+    let employee_name = updateData.empFullName;
+    let newRole = updateData.newRole;
+    console.log(employee_name);
+    console.log(newRole);
+
+    let getEmpId = `SELECT employee.id FROM employee 
+                WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${employee_name}'`;
+
+    let getNewRoleId =  `SELECT roles.id FROM roles 
+                WHERE roles.title = '${newRole}'`;
 
 
-const update_emp = `UPDATE employee SET role_id = ?
-                  WHERE id = ${employee_id}`;
+            db.query(getEmpId, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                let emp_id = result[0].id;
+                goToNewRole(employee_name, newRole, emp_id)});
 
-        };
+            goToNewRole = (employee_name, newRole, emp_id) => {
+                db.query(getNewRoleId, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                let newRole_id = result[0].id;
+                updateRole(employee_name, newRole, emp_id, newRole_id)});
+    }
+};
+
+updateRole = (employee_name, newRole, emp_id, newRole_id) => {
+
+    const update_emp = `UPDATE employee SET role_id = ${newRole_id}
+            WHERE id = ${emp_id}`;
+
+            db.query(update_emp, (err, result) => {
+                if (err) throw err;
+                console.log(`Added ${employee_name}'s new role '${newRole}' to the database`);
+                profileMenuOptions();
+            });
+
+}
+
 
 
 profileMenuOptions();
