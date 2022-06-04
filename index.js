@@ -233,22 +233,22 @@ const addEmpData = (empData) => {
 
         let getManagerId = `SELECT employee.manager_id FROM employee
         WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${manager}' LIMIT 1`;
-           
-            db.connect(function(err) {
+
+        db.connect(function(err) {
 
                 db.query(getRoleId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
                     let role_id = result[0].id;
-                    addEmp(first_name, last_name, role_id, manager_id);
-                });
-
+                
                 db.query(getManagerId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
                     let manager_id = result[0].id;
+    
                     addEmp(first_name, last_name, role_id, manager_id);
-                })
+                });
+
 
                 const addEmp = (first_name, last_name, role_id, manager_id) => {
            
@@ -264,7 +264,7 @@ const addEmpData = (empData) => {
     
               });
 
-              
+            });              
            };   
                
     
@@ -278,7 +278,7 @@ let employee_id = `SELECT employee.id FROM employee
 
 
          let update_emp = `UPDATE employee SET role_id = ?
-                  WHERE id = ?`;
+                  WHERE id = ${employee}`;
 
         };
 
