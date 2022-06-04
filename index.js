@@ -140,13 +140,13 @@ const viewRoles = () => {
     
 const viewEmps = () => {
 
-    const view_emps = `SELECT employee.id AS emp_id, employee.first_name AS first_name, employee.last_name AS last_name,  
-    roles.title AS job_title, department.name AS department, roles.salary,
-    CONCAT(employee.first_name,' ', employee.last_name) AS manager 
-    FROM employee
-    INNER JOIN roles ON employee.role_id = roles.id
+    const view_emps = `SELECT employee1.id AS emp_id, employee1.first_name AS first_name, employee1.last_name AS last_name,  
+    roles.title AS job_title, department.name AS department, roles.salary, employee1.manager_id,
+    CONCAT(manager.first_name,' ', manager.last_name) AS manager 
+    FROM employee employee1  
+    INNER JOIN roles ON employee1.role_id = roles.id
     LEFT JOIN department ON department.id = roles.department_id
-    LEFT JOIN 
+    LEFT JOIN employee manager ON employee1.manager_id = manager.id  
     `; 
 
     db.connect(function(err) {
