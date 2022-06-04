@@ -1,6 +1,6 @@
 // Import all required dependencies/modules/packages
 const inquirer = require("inquirer");
-const cTable = require("console.table");
+require("console.table");
 const db = require("./db/connection");
 
 const profileMenuOptions = () => {
@@ -115,7 +115,7 @@ const viewDepts = () => {
         if (err) throw err;
         db.query(view_depts, function (err, result) {
             if (err) throw err;
-            cTable(result);
+            console.table(result);
             profileMenuOptions();
         });
     });
@@ -132,7 +132,7 @@ const viewRoles = () => {
         if (err) throw err;
         db.query(view_roles, function (err, result) {
           if (err) throw err;
-          cTable(result);
+          console.table(result);
           profileMenuOptions();
         });
       });
@@ -151,7 +151,7 @@ const viewEmps = () => {
         if (err) throw err;
         db.query(view_emps, function (err, result) {
             if (err) throw err;
-            cTable(result);
+            console.table(result);
             profileMenuOptions();
         });
         });
@@ -169,6 +169,8 @@ const addDepts = (deptData) => {
         db.query(add_dept, (err, result) => {
             if (err) throw err;
             console.log(`Added ${dept_name} to the database`);
+            profileMenuOptions();
+
         });
           });
     
@@ -193,6 +195,7 @@ const addDepts = (deptData) => {
 
                 db.query(role_id, (err, result) => {
                     if (err) throw err;
+                    console.log(result);
                     let dept_id = result[0].id;
                     addRole(role, salary, dept_id);
 
@@ -208,6 +211,7 @@ const addDepts = (deptData) => {
             db.query(add_role, (err, result) => {
                 if (err) throw err;
                 console.log(`Added ${role} to the database`);
+                profileMenuOptions();
             });
         }       
    });
@@ -244,7 +248,7 @@ const addEmpData = (empData) => {
                 db.query(getManagerId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
-                    let manager_id = result[0].id;
+                    let manager_id = result[0].manager_id;
     
                     addEmp(first_name, last_name, role_id, manager_id);
                 });
@@ -259,6 +263,7 @@ const addEmpData = (empData) => {
                        db.query(add_emp, (err, result) => {
                            if (err) throw err;
                            console.log(`Added ${first_name} ${last_name} to the database`);
+                           profileMenuOptions();
                        });
                    }       
     
@@ -278,7 +283,7 @@ let employee_id = `SELECT employee.id FROM employee
 
 
          let update_emp = `UPDATE employee SET role_id = ?
-                  WHERE id = ${employee}`;
+                  WHERE id = ${employee_id}`;
 
         };
 
