@@ -142,7 +142,7 @@ const viewEmps = () => {
 
     const view_emps = `SELECT employee.id AS emp_id, employee.first_name AS first_name, employee.last_name AS last_name,  
     roles.title AS job_title, department.name AS department, roles.salary,
-    CONCAT(employee.first_name,' ', employee.last_name) as manager
+    CONCAT(employee.first_name,' ', employee.last_name) AS manager  
     FROM employee
     INNER JOIN roles ON employee.role_id = roles.id
     LEFT JOIN department ON department.id = roles.department_id`; 
@@ -235,7 +235,7 @@ const addEmpData = (empData) => {
         WHERE roles.title = '${role}' 
         LIMIT 1`;
 
-        let getManagerId = `SELECT employee.manager_id FROM employee
+        let getManagerId = `SELECT employee.id FROM employee
         WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${manager}' LIMIT 1`;
 
         db.connect(function(err) {
@@ -248,7 +248,7 @@ const addEmpData = (empData) => {
                 db.query(getManagerId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
-                    let manager_id = result[0].manager_id;
+                    let manager_id = result[0].id;
     
                     addEmp(first_name, last_name, role_id, manager_id);
                 });
