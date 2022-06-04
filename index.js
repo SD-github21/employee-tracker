@@ -4,9 +4,6 @@ const cTable = require("console.table");
 const db = require("./db/connection");
 
 
-let add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-               VALUES
-               (?, ?,  ?, )`;
 
 let update_emp = `UPDATE employee SET role_id = ?
                   WHERE id = ?`;
@@ -56,11 +53,57 @@ const profileMenuOptions = () => {
                     message: "Which department does the role belong to?",
                  },
                 ])
-            .then (roleData => {addData(roleData)});
+            .then (roleData => {addRoleData(roleData)});
         } else if (menu === "Add an employee") {
-            addEmp();
+            return inquirer.prompt([
+                {
+                    type: "input",
+                    name: "first_name",
+                    message: "What is the employee's first name?",
+                },
+                {
+                    type: "input",
+                    name: "last_name",
+                    message: "What is the employee's last name?",
+                },
+                {
+                    type: "input",
+                    name: "role",
+                    message: "What is the employee's role?",
+                },
+                {
+                    type: "input",
+                    name: "manager",
+                    message: "Who is the employee's manager?",
+                 },
+                ])
+            .then (empData => {addEmpData(empData)});
         } else if (menu === "Update an employee role") {
-            updateEmp();
+
+            let employee_table = `SELECT CONCAT(employee.first_name,' ', employee.last_name) AS employee
+            FROM employee`;
+        db.connect(function(err) {
+            if (err) throw err;
+            db.query(employee_table, function (err, result) {
+                if (err) throw err;
+                console.log(result);
+                let getEmpChoices = result.map(({ employee }) => employee) 
+                console.log(getEmpChoices);          
+            })});
+        //     .then (employees => {
+        //         (inquirer.prompt(
+        //             {
+        //                 type: "list",
+        //                 name: "newRole",
+        //                 message: "Which employee's role would you like to update?",
+        //                 choices:  employees
+        
+        //         }))
+
+        //     }).then (updateData => {updateRole(updateData)});
+
+        // });
+
         } else {
             // Create a statement to notify user that application has finished
             console.log("You have finished viewing and managing your organization's data. Goodbye!");
@@ -138,7 +181,7 @@ const addDepts = (deptData) => {
     
  };
     
- const addData = (roleData) => {
+ const addRoleData = (roleData) => {
      console.log(roleData);
     let role = roleData.role;
     console.log(role);
@@ -176,9 +219,51 @@ const addDepts = (deptData) => {
         }       
    });
 };   
-    
-    
-    
+ 
+// BEGIN ADD EMPLOYEE CODE
 
+// const addEmpData = (empData) => {
+//         console.log(empData);
+//         let first_name = empData.first_name;
+//         console.log(first_name);
+//         let last_name = empData.last_name;
+//         console.log(last_name);
+//         let role = empData.role;
+//         console.log(role);
+//         let manager = empData.manager;
+//         console.log(manager);
+           
+           
+//         let role_id = `SELECT department.id FROM department 
+//         INNER JOIN roles ON department_id = department.id
+//         WHERE department.name = '${department}' 
+//         LIMIT 1`;
+           
+//             db.connect(function(err) {
+
+//                 db.query(role_id, (err, result) => {
+//                     if (err) throw err;
+//                     let role_id = result[0].id;
+//                     addEmp(first_name, last_name, role_id, manager_id);
+//                 });
+                   
+//                    const addEmp = (first_name, last_name, role_id, manager_id) => {
+           
+//                     const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+//                     VALUES
+//                     ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
+     
+//                        db.query(add_emp, (err, result) => {
+//                            if (err) throw err;
+//                            console.log(`Added ${first_name} ${last_name} to the database`);
+//                        });
+//                    }       
+//               });
+//            };   
+               
+    
+const updateRole = (updateData) => {
+    console.log(updateData)
+}
 
 profileMenuOptions();
