@@ -3,12 +3,6 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const db = require("./db/connection");
 
-
-
-let update_emp = `UPDATE employee SET role_id = ?
-                  WHERE id = ?`;
-
-
 const profileMenuOptions = () => {
     inquirer.prompt(
         {
@@ -88,22 +82,21 @@ const profileMenuOptions = () => {
                 if (err) throw err;
                 console.log(result);
                 let getEmpChoices = result.map(({ employee }) => employee) 
-                console.log(getEmpChoices);          
+                return inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "empNewRole",
+                        message: "Which employee's role would you like to update?",
+                        choices:  getEmpChoices,
+                    },
+                    {
+                        type: "input",
+                        name: "newRole",
+                        message: "What is the new role of this employee?"
+                    }
+                ])
+                .then (empRole => {updateRole(empRole)});
             })});
-        //     .then (employees => {
-        //         (inquirer.prompt(
-        //             {
-        //                 type: "list",
-        //                 name: "newRole",
-        //                 message: "Which employee's role would you like to update?",
-        //                 choices:  employees
-        
-        //         }))
-
-        //     }).then (updateData => {updateRole(updateData)});
-
-        // });
-
         } else {
             // Create a statement to notify user that application has finished
             console.log("You have finished viewing and managing your organization's data. Goodbye!");
@@ -122,7 +115,7 @@ const viewDepts = () => {
         if (err) throw err;
         db.query(view_depts, function (err, result) {
             if (err) throw err;
-            console.table(result);
+            cTable(result);
             profileMenuOptions();
         });
     });
@@ -139,7 +132,7 @@ const viewRoles = () => {
         if (err) throw err;
         db.query(view_roles, function (err, result) {
           if (err) throw err;
-          console.table(result);
+          cTable(result);
           profileMenuOptions();
         });
       });
@@ -158,7 +151,7 @@ const viewEmps = () => {
         if (err) throw err;
         db.query(view_emps, function (err, result) {
             if (err) throw err;
-            console.table(result);
+            cTable(result);
             profileMenuOptions();
         });
         });
@@ -222,48 +215,72 @@ const addDepts = (deptData) => {
  
 // BEGIN ADD EMPLOYEE CODE
 
-// const addEmpData = (empData) => {
-//         console.log(empData);
-//         let first_name = empData.first_name;
-//         console.log(first_name);
-//         let last_name = empData.last_name;
-//         console.log(last_name);
-//         let role = empData.role;
-//         console.log(role);
-//         let manager = empData.manager;
-//         console.log(manager);
+const addEmpData = (empData) => {
+        console.log(empData);
+        let first_name = empData.first_name
+        console.log(first_name);
+        let last_name = empData.last_name;
+        console.log(last_name);
+        let role = empData.role;
+        console.log(role);
+        let manager = empData.manager;
+        console.log(manager);
            
            
-//         let role_id = `SELECT department.id FROM department 
-//         INNER JOIN roles ON department_id = department.id
-//         WHERE department.name = '${department}' 
-//         LIMIT 1`;
-           
-//             db.connect(function(err) {
+        let getRoleId = `SELECT roles.id FROM roles 
+        WHERE roles.title = '${role}' 
+        LIMIT 1`;
 
-//                 db.query(role_id, (err, result) => {
-//                     if (err) throw err;
-//                     let role_id = result[0].id;
-//                     addEmp(first_name, last_name, role_id, manager_id);
-//                 });
-                   
-//                    const addEmp = (first_name, last_name, role_id, manager_id) => {
+        let getManagerId = `SELECT employee.manager_id FROM employee
+        WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${manager}' LIMIT 1`;
            
-//                     const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-//                     VALUES
-//                     ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
+            db.connect(function(err) {
+
+                db.query(getRoleId, (err, result) => {
+                    if (err) throw err;
+                    console.log(result);
+                    let role_id = result[0].id;
+                    addEmp(first_name, last_name, role_id, manager_id);
+                });
+
+                db.query(getManagerId, (err, result) => {
+                    if (err) throw err;
+                    console.log(result);
+                    let manager_id = result[0].id;
+                    addEmp(first_name, last_name, role_id, manager_id);
+                })
+
+                const addEmp = (first_name, last_name, role_id, manager_id) => {
+           
+                    const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                    VALUES
+                    ('${first_name}', '${last_name}', '${role_id}', '${manager_id}')`;
      
-//                        db.query(add_emp, (err, result) => {
-//                            if (err) throw err;
-//                            console.log(`Added ${first_name} ${last_name} to the database`);
-//                        });
-//                    }       
-//               });
-//            };   
+                       db.query(add_emp, (err, result) => {
+                           if (err) throw err;
+                           console.log(`Added ${first_name} ${last_name} to the database`);
+                       });
+                   }       
+    
+              });
+
+              
+           };   
                
     
-const updateRole = (updateData) => {
-    console.log(updateData)
-}
+const updateRole = function (updateData) {
+console.log(updateData);
+let employee_name = updateData.empNewRole
+let newRole = updateData.newRole
+
+let employee_id = `SELECT employee.id FROM employee 
+                WHERE CONCAT(employee.first_name,' ', employee.last_name) = ${employee_name}`;
+
+
+         let update_emp = `UPDATE employee SET role_id = ?
+                  WHERE id = ?`;
+
+        };
+
 
 profileMenuOptions();
