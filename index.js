@@ -237,24 +237,36 @@ const addEmpData = (empData) => {
         WHERE roles.title = '${role}' 
         LIMIT 1`;
 
-        let getManagerId = `SELECT employee.id FROM employee
+        let getManagerId =  `SELECT employee.id
+        FROM employee 
         WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${manager}' LIMIT 1`;
 
-        db.connect(function(err) {
 
-         let role_id =  db.query(getRoleId, (err, result) => {
-                    if (err) throw err;
-                    console.log(result);
-                    let role_id = result[0].id;
-                    return role_id});
+        db.query(getRoleId, (err, result) => {
+            if (err) throw err;
+            console.log(result);
+            let role_id = result[0].id;
+            goToManager(first_name, last_name, role_id)});
+
+            const goToManager = (first_name, last_name, role_id, manager) =>{
+                console.log(first_name);
+                console.log(last_name);
+                console.log(role_id);
                 
-        let manager_id = db.query(getManagerId, (err, result) => {
-                    if (err) throw err;
-                    console.log(result);
-                    result[0].id});
+  
+            db.query(getManagerId, (err, result) => {
+                if (err) throw err;
+                console.log(result);
+                let manager_id = result[0].id;
+                addEmp(first_name, last_name, role_id, manager_id)});
+
+
+            }
+
+        }
             
 
-        const addEmp = () => {
+        const addEmp = (first_name, last_name, role_id, manager_id) => {
            
                     const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                     VALUES
@@ -265,10 +277,9 @@ const addEmpData = (empData) => {
                            console.log(`Added ${first_name} ${last_name} to the database`);
                            profileMenuOptions();
                        });
-                   }       
-    addEmp();
-              });
-            };              
+                   } ;      
+              
+                      
               
                
     
