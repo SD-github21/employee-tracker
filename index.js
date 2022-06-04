@@ -142,10 +142,12 @@ const viewEmps = () => {
 
     const view_emps = `SELECT employee.id AS emp_id, employee.first_name AS first_name, employee.last_name AS last_name,  
     roles.title AS job_title, department.name AS department, roles.salary,
-    CONCAT(employee.first_name,' ', employee.last_name) AS manager  
+    CONCAT(employee.first_name,' ', employee.last_name) AS manager 
     FROM employee
     INNER JOIN roles ON employee.role_id = roles.id
-    LEFT JOIN department ON department.id = roles.department_id`; 
+    LEFT JOIN department ON department.id = roles.department_id
+    LEFT JOIN 
+    `; 
 
     db.connect(function(err) {
         if (err) throw err;
@@ -187,8 +189,7 @@ const addDepts = (deptData) => {
 
 
         let role_id = `SELECT department.id FROM department 
-        INNER JOIN roles ON department_id = department.id
-        WHERE department.name = '${department}' 
+        WHERE department.name = '${department}'
         LIMIT 1`;
 
             db.connect(function(err) {
@@ -197,6 +198,7 @@ const addDepts = (deptData) => {
                     if (err) throw err;
                     console.log(result);
                     let dept_id = result[0].id;
+                    console.log(dept_id);
                     addRole(role, salary, dept_id);
 
                 });
@@ -240,21 +242,19 @@ const addEmpData = (empData) => {
 
         db.connect(function(err) {
 
-                db.query(getRoleId, (err, result) => {
+         let role_id =  db.query(getRoleId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
                     let role_id = result[0].id;
+                    return role_id});
                 
-                db.query(getManagerId, (err, result) => {
+        let manager_id = db.query(getManagerId, (err, result) => {
                     if (err) throw err;
                     console.log(result);
-                    let manager_id = result[0].id;
-    
-                    addEmp(first_name, last_name, role_id, manager_id);
-                });
+                    result[0].id});
+            
 
-
-                const addEmp = (first_name, last_name, role_id, manager_id) => {
+        const addEmp = () => {
            
                     const add_emp = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                     VALUES
@@ -266,11 +266,10 @@ const addEmpData = (empData) => {
                            profileMenuOptions();
                        });
                    }       
-    
+    addEmp();
               });
-
-            });              
-           };   
+            };              
+              
                
     
 const updateRole = function (updateData) {
@@ -282,7 +281,7 @@ let employee_id = `SELECT employee.id FROM employee
                 WHERE CONCAT(employee.first_name,' ', employee.last_name) = ${employee_name}`;
 
 
-         let update_emp = `UPDATE employee SET role_id = ?
+const update_emp = `UPDATE employee SET role_id = ?
                   WHERE id = ${employee_id}`;
 
         };

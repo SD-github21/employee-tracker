@@ -12,5 +12,8 @@ const db = mysql.createConnection(
         database: "employee_tracker"
     },
 );
+// can add connection in this file
+db.connect(function(err) {
+    if (err) throw err;});
 
 module.exports = db;
