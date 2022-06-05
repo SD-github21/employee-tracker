@@ -142,7 +142,7 @@ const viewRoles = () => {
 const viewEmps = () => {
 
     const view_emps = `SELECT employee1.id AS emp_id, employee1.first_name AS first_name, employee1.last_name AS last_name,  
-    roles.title AS job_title, department.name AS department, roles.salary, employee1.manager_id,
+    roles.title AS job_title, department.name AS department, roles.salary, 
     CONCAT(manager.first_name,' ', manager.last_name) AS manager 
     FROM employee employee1  
     INNER JOIN roles ON employee1.role_id = roles.id
@@ -180,13 +180,10 @@ const addDepts = (deptData) => {
  };
     
  const addRoleData = (roleData) => {
-     console.log(roleData);
+
     let role = roleData.role;
-    console.log(role);
     let salary = roleData.salary;
-    console.log(salary);
     let department = roleData.department;
-    console.log(department);
 
 
         let role_id = `SELECT department.id FROM department 
@@ -197,9 +194,7 @@ const addDepts = (deptData) => {
 
                 db.query(role_id, (err, result) => {
                     if (err) throw err;
-                    console.log(result);
                     let dept_id = result[0].id;
-                    console.log(dept_id);
                     addRole(role, salary, dept_id);
 
                 });
@@ -223,15 +218,11 @@ const addDepts = (deptData) => {
 // BEGIN ADD EMPLOYEE CODE
 
 const addEmpData = (empData) => {
-        console.log(empData);
+
         let first_name = empData.first_name
-        console.log(first_name);
         let last_name = empData.last_name;
-        console.log(last_name);
         let role = empData.role;
-        console.log(role);
         let manager = empData.manager;
-        console.log(manager);
            
            
         let getRoleId = `SELECT roles.id FROM roles 
@@ -245,19 +236,14 @@ const addEmpData = (empData) => {
 
         db.query(getRoleId, (err, result) => {
             if (err) throw err;
-            console.log(result);
             let role_id = result[0].id;
             goToManager(first_name, last_name, role_id)});
 
             const goToManager = (first_name, last_name, role_id, manager) =>{
-                console.log(first_name);
-                console.log(last_name);
-                console.log(role_id);
                 
   
             db.query(getManagerId, (err, result) => {
                 if (err) throw err;
-                console.log(result);
                 let manager_id = result[0].id;
                 addEmp(first_name, last_name, role_id, manager_id)});
 
@@ -288,8 +274,6 @@ const updateRoleData = function (updateData) {
 
     let employee_name = updateData.empFullName;
     let newRole = updateData.newRole;
-    console.log(employee_name);
-    console.log(newRole);
 
     let getEmpId = `SELECT employee.id FROM employee 
                 WHERE CONCAT(employee.first_name,' ', employee.last_name) = '${employee_name}'`;
@@ -300,14 +284,12 @@ const updateRoleData = function (updateData) {
 
             db.query(getEmpId, (err, result) => {
                 if (err) throw err;
-                console.log(result);
                 let emp_id = result[0].id;
                 goToNewRole(employee_name, newRole, emp_id)});
 
             goToNewRole = (employee_name, newRole, emp_id) => {
                 db.query(getNewRoleId, (err, result) => {
                 if (err) throw err;
-                console.log(result);
                 let newRole_id = result[0].id;
                 updateRole(employee_name, newRole, emp_id, newRole_id)});
     }
