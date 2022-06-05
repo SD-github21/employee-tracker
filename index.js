@@ -302,12 +302,15 @@ updateRole = (employee_name, newRole, emp_id, newRole_id) => {
 
             db.query(update_emp, (err, result) => {
                 if (err) throw err;
-                console.log(`Added ${employee_name}'s new role '${newRole}' to the database`);
+                console.log(`Updated ${employee_name}'s new role '${newRole}' in the database`);
                 profileMenuOptions();
             });
 
 }
 
+initializeApp = () => {
+    console.log("Welcome to Employee Tracker - a CMS designed to help you organize and plan your business!");
+    profileMenuOptions();
+}
 
-
-profileMenuOptions();
+initializeApp();
