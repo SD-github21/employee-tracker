@@ -112,3 +112,4 @@ No tests were utilized in the creation of this application.
 <br>
 
 ### **Video of Employee Tracker**
+https://drive.google.com/file/d/1DmhTlppJhT_mxq9Z-kQx-o-unlxSNwZ1/view
