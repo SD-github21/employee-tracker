@@ -3,8 +3,8 @@ const inquirer = require("inquirer");
 require("console.table");
 const db = require("./db/connection");
 
-// Create function 
-const profileMenuOptions = () => {
+// Create function for menu options
+const menuOptions = () => {
     inquirer.prompt(
         {
             type: "list",
@@ -78,7 +78,7 @@ const profileMenuOptions = () => {
                 ])
             .then (empData => {addEmpData(empData)});
         } else if (menu === "Update an employee role") {
-
+        // Create the SQL query to return the list of employees with their first and last names from the db 
             let employee_name = `SELECT CONCAT(employee.first_name,' ', employee.last_name) AS employee
             FROM employee`;
         db.connect(function(err) {
@@ -112,6 +112,7 @@ const profileMenuOptions = () => {
 };
 
 
+// Function to allow for user to "View All Departments"
 const viewDepts = () => {
 
     const view_depts = `SELECT department.id AS dept_id, department.name AS dept_name FROM department`;
@@ -121,11 +122,12 @@ const viewDepts = () => {
         db.query(view_depts, function (err, result) {
             if (err) throw err;
             console.table(result);
-            profileMenuOptions();
+            menuOptions();
         });
     });
 };
 
+// Function to allow for user to "View All Roles"
 const viewRoles = () => {
 
     const view_roles = `SELECT roles.id AS role_id, roles.title AS job_title, department.name AS dept_name,
@@ -138,11 +140,12 @@ const viewRoles = () => {
         db.query(view_roles, function (err, result) {
           if (err) throw err;
           console.table(result);
-          profileMenuOptions();
+          menuOptions();
         });
       });
     };
-    
+
+// Function to allow for user to "View All Employees"
 const viewEmps = () => {
 
     const view_emps = `SELECT employee1.id AS emp_id, employee1.first_name AS first_name, employee1.last_name AS last_name,  
@@ -159,12 +162,13 @@ const viewEmps = () => {
         db.query(view_emps, function (err, result) {
             if (err) throw err;
             console.table(result);
-            profileMenuOptions();
+            menuOptions();
         });
         });
     };
 
-    const viewEmpsByMan = () => {
+// Function to allow for user to "View All Employees by Manager"
+ const viewEmpsByMan = () => {
 
         const view_empsMan = `SELECT employee1.first_name as first_name, employee1.last_name AS last_name,
         CONCAT(manager.first_name,' ', manager.last_name) AS manager 
@@ -178,12 +182,13 @@ const viewEmps = () => {
             db.query(view_empsMan, function (err, result) {
                 if (err) throw err;
                 console.table(result);
-                profileMenuOptions();
+                menuOptions();
             });
             });
         };
-    
-    const viewEmpsByDept = () => {
+
+// Function to allow for user to "View All Employees by Department"
+const viewEmpsByDept = () => {
 
             const view_empsDept = `SELECT employee.first_name AS first_name, employee.last_name AS last_name, 
             department.name AS department
@@ -198,16 +203,12 @@ const viewEmps = () => {
                 db.query(view_empsDept, function (err, result) {
                     if (err) throw err;
                     console.table(result);
-                    profileMenuOptions();
+                    menuOptions();
                 });
                 });
             };
     
-
-
-
-
-
+// Function to allow for user to "Add a Department"
 const addDepts = (deptData) => {
     let dept_name = (deptData.department);
 
@@ -219,13 +220,14 @@ const addDepts = (deptData) => {
         db.query(add_dept, (err, result) => {
             if (err) throw err;
             console.log(`Added ${dept_name} to the database`);
-            profileMenuOptions();
+            menuOptions();
 
         });
           });
     
  };
-    
+ 
+ // Function to allow for user to "Add a Role"
  const addRoleData = (roleData) => {
 
     let role = roleData.role;
@@ -256,14 +258,13 @@ const addDepts = (deptData) => {
             db.query(add_role, (err, result) => {
                 if (err) throw err;
                 console.log(`Added ${role} to the database`);
-                profileMenuOptions();
+                menuOptions();
             });
         }       
    });
 };   
  
-// BEGIN ADD EMPLOYEE CODE
-
+// // Function to allow for user to "Add an Employee"
 const addEmpData = (empData) => {
 
         let first_name = empData.first_name
@@ -309,14 +310,11 @@ const addEmpData = (empData) => {
             db.query(add_emp, (err, result) => {
                 if (err) throw err;
                 console.log(`Added ${first_name} ${last_name} to the database`);
-                profileMenuOptions();
+                menuOptions();
             });
 };      
               
-                      
-              
-               
-    
+// Function to allow for user to "Update A New Role"                      
 const updateRoleData = function (updateData) {
 
     let employee_name = updateData.empFullName;
@@ -350,14 +348,15 @@ updateRole = (employee_name, newRole, emp_id, newRole_id) => {
             db.query(update_emp, (err, result) => {
                 if (err) throw err;
                 console.log(`Updated ${employee_name}'s new role '${newRole}' in the database`);
-                profileMenuOptions();
+                menuOptions();
             });
-
 }
 
+// Function to initialize the application by welcoming the user and directing them to the options menu
 initializeApp = () => {
     console.log("Welcome to Employee Tracker - a CMS designed to help you organize and plan your business!");
-    profileMenuOptions();
+    menuOptions();
 }
 
+// Initialize the application
 initializeApp();
