@@ -170,7 +170,7 @@ const viewEmps = () => {
         CONCAT(manager.first_name,' ', manager.last_name) AS manager 
         FROM employee employee1 
         LEFT JOIN employee manager ON employee1.manager_id = manager.id          
-        ORDER by manager      
+        ORDER by manager     
         `; 
     
         db.connect(function(err) {
