@@ -106,7 +106,6 @@ No tests were utilized in the creation of this application.
 ### **Built With**
 * JavaScript
 * Node.js
-* npm
 * Inquirer.js
 * MySQL
 
