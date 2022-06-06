@@ -66,7 +66,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ![alt text](images/screen-shot-menu.png)
 
-(3) If "View all departments", "View all roles", and "View all employees" are chosen, then a table of the corresponding data is printed. Below is a sample of what is printed when the user chooses "View all employees": 
+(3) If "View all departments", "View all roles", "View all employees", "View emmployees by manager", or "View employees by department" are chosen, then a table of the corresponding data is printed. Below is a sample of what is printed when the user chooses "View all employees": 
 
 ![alt text](images/screen-shot-emp-data.png)
 
