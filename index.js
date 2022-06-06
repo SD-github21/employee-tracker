@@ -10,8 +10,8 @@ const profileMenuOptions = () => {
             type: "list",
             name: "menu",
             message: "What would you like to do?",
-            choices: ['View all departments', 'View all roles', 'View all employees', 
-                      'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 
+            choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager',
+                      'View employees by department', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 
                       'Exit']
         })
     .then (({ menu }) => {
@@ -22,6 +22,10 @@ const profileMenuOptions = () => {
             viewRoles();
         } else if (menu === "View all employees") {
             viewEmps();
+        } else if (menu === "View employees by manager") {
+            viewEmpsByMan();
+        } else if (menu === "View employees by department") {
+            viewEmpsByDept();
         } else if (menu === "Add a department") {
             inquirer.prompt(
                 {
@@ -159,6 +163,49 @@ const viewEmps = () => {
         });
         });
     };
+
+    const viewEmpsByMan = () => {
+
+        const view_empsMan = `SELECT employee1.first_name as first_name, employee1.last_name AS last_name,
+        CONCAT(manager.first_name,' ', manager.last_name) AS manager 
+        FROM employee employee1 
+        LEFT JOIN employee manager ON employee1.manager_id = manager.id          
+        ORDER by manager      
+        `; 
+    
+        db.connect(function(err) {
+            if (err) throw err;
+            db.query(view_empsMan, function (err, result) {
+                if (err) throw err;
+                console.table(result);
+                profileMenuOptions();
+            });
+            });
+        };
+    
+    const viewEmpsByDept = () => {
+
+            const view_empsDept = `SELECT employee.first_name AS first_name, employee.last_name AS last_name, 
+            department.name AS department
+            FROM employee
+            INNER JOIN roles ON employee.role_id = roles.id
+            LEFT JOIN department ON department.id = roles.department_id
+            ORDER BY department
+            `; 
+        
+            db.connect(function(err) {
+                if (err) throw err;
+                db.query(view_empsDept, function (err, result) {
+                    if (err) throw err;
+                    console.table(result);
+                    profileMenuOptions();
+                });
+                });
+            };
+    
+
+
+
 
 
 const addDepts = (deptData) => {
