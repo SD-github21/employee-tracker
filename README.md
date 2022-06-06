@@ -3,7 +3,7 @@
 # **Employee Tracker**
 
 ## **Description**
-The purpose of this project was to build a command-line application with Node.js, Inquirer, and MySQL to manage a company's employee database. This content management system allows the user to choose from a menu of options to view department, roles, and employee data; add departments, roles, and employees; and update an employee's role. The program connects on to a MySQL database on the back end so that information can be transferred to the user in the form of displayed data tables or from the user and stored into a MySQL database. 
+The purpose of this project was to build a command-line application with Node.js, Inquirer, and MySQL to manage a company's employee database. This content management system allows the user to choose from a menu of options to view departments, roles, and various types of employee data; add departments, roles, and employees; and update an employee's role. The program connects on to a MySQL database on the back end so that information can be transferred to the user in the form of displayed data tables or from the user and stored into a MySQL database. 
 
 <br>
 
@@ -66,7 +66,7 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ![alt text](images/screen-shot-menu.png)
 
-(3) If "View all departments", "View all roles", "View all employees", "View emmployees by manager", or "View employees by department" are chosen, then a table of the corresponding data is printed. Below is a sample of what is printed when the user chooses "View all employees": 
+(3) If "View all departments", "View all roles", "View all employees", "View employees by manager", or "View employees by department" are chosen, then a table of the corresponding data is printed. Below is a sample of what is printed when the user chooses "View all employees": 
 
 ![alt text](images/screen-shot-emp-data.png)
 
